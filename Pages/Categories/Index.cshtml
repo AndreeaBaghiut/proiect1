@@ -1,0 +1,68 @@
+﻿@page "{id:int?}"
+
+@model proiect1.Pages.Categories.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Category[0].CategoryName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CategoryData.Categories) {
+
+            string selectedRow = "";
+            if(item.Id == Model.CategoryId)
+            {
+                selectedRow = "table-successs";
+            }
+            <tr class="@selectedRow">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td>
+                        <a asp-page="./Index" asp-route-id="@item.Id">Select</a> |
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.CategoryData.Recipes != null && Model.CategoryId > 0)
+{
+    <h3>Recipes in the selected Category</h3>
+    <p>Recipe count: @Model.CategoryData.Recipes.Count()</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Recipe Title</th>
+                <!-- Add other columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recipe in Model.CategoryData.Recipes)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => recipe.Title)</td>
+                    <!-- Add other columns as needed -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

@@ -1,0 +1,149 @@
+﻿@page
+@model proiect1.Pages.Recipes.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<script>
+    function addIngredientRow() {
+        var table = document.getElementById('ingredientTable');
+        var row = table.insertRow(-1);
+
+        // Coloana 1 - Selectează ingredient
+        var select = document.createElement('select');
+        select.name = 'RecipeIngredientsInput[' + table.rows.length + '].IngredientID';
+        select.className = 'form-control';
+
+        // Adăugă opțiunile manual, inclusiv unitatea în atributul data-unit
+   @foreach (var ingredient in Model.AllIngredients)
+{
+    <text>
+        var option = document.createElement('option');
+        option.value = "@ingredient.Value";
+        option.text = "@ingredient.Text";
+        option.setAttribute('data-unit', "@ingredient.Group.Name");
+        select.add(option);
+    </text>
+}
+
+
+            row.insertCell(0).appendChild(select);
+
+        // Coloana 2 - Introdu cantitate
+        var quantityInput = document.createElement('input');
+        quantityInput.type = 'text';
+        quantityInput.name = 'RecipeIngredientsInput[' + table.rows.length + '].Quantity';
+        quantityInput.className = 'form-control';
+        row.insertCell(1).appendChild(quantityInput);
+
+        // Coloana 3 - Unitate (afisata initial ca un text)
+        var unitText = document.createElement('span');
+        unitText.className = 'form-control';
+        unitText.innerHTML = ''; // Se completeaza in functie de selectie
+        row.insertCell(2).appendChild(unitText);
+
+        // Adaugă opțiuni pentru afișarea unității în funcție de selecție
+        select.addEventListener('change', function () {
+            unitText.innerHTML = this.options[this.selectedIndex].getAttribute('data-unit');
+        });
+    }
+
+    // Funcția se va apela automat atunci când pagina se încarcă
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            addIngredientRow();
+        });
+    } else {
+        addIngredientRow();
+    }
+</script>
+
+<form method="post" enctype="multipart/form-data">
+<h1>Create</h1>
+
+<h4>Recipe</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="Recipe.Title" class="control-label"></label>
+            <input asp-for="Recipe.Title" class="form-control" />
+            <span asp-validation-for="Recipe.Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Recipe.Description" class="control-label"></label>
+            <input asp-for="Recipe.Description" class="form-control" />
+            <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Recipe.Instructions" class="control-label"></label>
+            <input asp-for="Recipe.Instructions" class="form-control" />
+            <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+        </div>
+         <div class="form-group">
+                    <label asp-for="Recipe.RecipeIngredients" class="control-label">Ingredients</label>
+                    <table id="ingredientTable">
+                        <tr>
+                            <th>Select Ingredient</th>
+                            <th>Enter Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </table>
+                    <button type="button" onclick="addIngredientRow()">Add Ingredient</button>
+                    <span asp-validation-for="Recipe.RecipeIngredients" class="text-danger"></span>
+                </div>
+        <div class="form-group">
+            <label asp-for="Recipe.Photo" class="control-label"></label>
+            <div class="custom-file">
+                <input type="file" asp-for="Photo" class="custom-file-input" accept="image/*" />
+ 
+            </div>
+            <span asp-validation-for="Photo" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="Recipe.PublishingDate" class="control-label"></label>
+           <input asp-for="Recipe.PublishingDate" type="hidden" />
+
+            <span asp-validation-for="Recipe.PublishingDate" class="text-danger"></span>
+        </div>
+         <div class="form-group">
+                             <div class="table">
+                               <table>
+                                 <tr>
+                                    @{
+                                         int cnt = 0;
+                                         foreach (var cat in Model.AssignedCategoryDataList)
+                                     {
+                                             if (cnt++ % 3 == 0)
+                                              {
+                                                 @:</tr><tr>
+                                                 }
+                                                @:<td>
+                                               <input type="checkbox"
+                                                     name="selectedCategories"
+                                                    value="@cat.CategoryID"
+                                                     @(Html.Raw(cat.Assigned ?"checked=\"checked\"" : "")) />
+                                             @cat.CategoryID @: @cat.Name
+                                          @:</td>
+                                        }
+                                     @:</tr>
+                                     }
+                              </table>
+                         </div>
+                     </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+</form>
+

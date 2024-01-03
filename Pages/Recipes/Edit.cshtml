@@ -1,0 +1,155 @@
+﻿@page
+@model proiect1.Pages.Recipes.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Recipe</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Recipe.Id" />
+
+            <div class="form-group">
+                <label asp-for="Recipe.Title" class="control-label"></label>
+                <input asp-for="Recipe.Title" class="form-control" />
+                <span asp-validation-for="Recipe.Title" class="text-danger"></span>
+            </div>
+          
+<div class="form-group">
+    <h4>Ingredients</h4>
+    <table class="table" id="ingredientsTable">
+        <thead>
+            <tr>
+                <th>Ingredient</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Recipe.RecipeIngredients.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select asp-for="@Model.Recipe.RecipeIngredients.ElementAt(i).IngredientID"
+                                asp-items="@Model.AllIngredients"
+                                class="form-control">
+                            <option value="">-- Select Ingredient --</option>
+                        </select>
+                    </td>
+                    <td><input asp-for="@Model.Recipe.RecipeIngredients.ElementAt(i).Quantity" class="form-control" /></td>
+                    <td><button type="button" class="btn btn-danger" onclick="removeIngredientRow(this)">Remove</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success" onclick="addIngredientRow()">Add Ingredient</button>
+</div>
+
+
+            <div class="form-group">
+                <label asp-for="Recipe.Description" class="control-label"></label>
+                <input asp-for="Recipe.Description" class="form-control" />
+                <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Recipe.Instructions" class="control-label"></label>
+                <input asp-for="Recipe.Instructions" class="form-control" />
+                <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+            </div>
+
+           <div class="form-group">
+        <label asp-for="Recipe.Photo" class="control-label"></label>
+        <input type="file" asp-for="Photo" class="form-control" />
+        <span asp-validation-for="Photo" class="text-danger"></span>
+           </div>
+
+
+            <div class="form-group">
+                <label asp-for="Recipe.PublishingDate" class="control-label"></label>
+                <input asp-for="Recipe.PublishingDate" class="form-control" />
+                <span asp-validation-for="Recipe.PublishingDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                foreach (var cat in Model.AssignedCategoryDataList)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedCategories"
+                                               value="@cat.CategoryID"
+                                               @(Html.Raw(cat.Assigned ? "checked=\"checked\"" : "")) />
+                                        @cat.CategoryID @: @cat.Name
+                                    @:</td>
+                                }
+                            @:</tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+<script>
+    // Store the ingredients in a JavaScript variable
+    var allIngredients = @Html.Raw(Json.Serialize(Model.AllIngredients));
+
+    function addIngredientRow() {
+        var table = document.getElementById("ingredientsTable").getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow(table.rows.length);
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+
+        var select = document.createElement('select');
+        select.name = 'Recipe.RecipeIngredients[' + table.rows.length + '].IngredientID';
+        select.className = 'form-control';
+
+        // Populate options dynamically
+        for (var i = 0; i < allIngredients.length; i++) {
+            var option = document.createElement('option');
+            option.value = allIngredients[i].value;
+            option.text = allIngredients[i].text;
+            select.appendChild(option);
+        }
+
+        cell1.appendChild(select);
+
+        var quantityInput = document.createElement('input');
+        quantityInput.type = 'text';
+        quantityInput.name = 'Recipe.RecipeIngredients[' + table.rows.length + '].Quantity';
+        quantityInput.className = 'form-control';
+        cell2.appendChild(quantityInput);
+
+        cell3.innerHTML = '<button type="button" class="btn btn-danger" onclick="removeIngredientRow(this)">Remove</button>';
+    }
+
+    function removeIngredientRow(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+</script>

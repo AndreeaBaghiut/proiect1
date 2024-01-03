@@ -1,0 +1,86 @@
+﻿@page
+@model proiect1.Pages.SavedRecipes.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.Instructions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.Photo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.PublishingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.RecipeIngredients)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SavedRecipe[0].SavedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SavedRecipe)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipe.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipe.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipe.Instructions)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Recipe.Photo))
+                    {
+                        <img src="@Url.Content("~/Recipe Photos/" + item.Recipe.Photo)" alt="Recipe Photo" style="max-width: 100px; max-height: 100px;" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipe.PublishingDate)
+                </td>
+                <td>
+                    <ol>
+                        @{
+                            foreach (var recipeIngredient in item.Recipe.RecipeIngredients)
+                            {
+                                <li>
+                                    @recipeIngredient.Quantity @recipeIngredient.Ingredient.Unit - @recipeIngredient.Ingredient.Name
+                                </li>
+                            }
+                        }
+                    </ol>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SavedDate)
+                </td>
+                <td>
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
