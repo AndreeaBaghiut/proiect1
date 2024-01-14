@@ -27,11 +27,12 @@ namespace proiect1.Pages.SavedRecipes
             {
                 SavedRecipe = await _context.SavedRecipes
                     .Include(s => s.Recipe)
-                    .ThenInclude(r => r.RecipeIngredients)
+                        .ThenInclude(r => r.RecipeIngredients)
+                            .ThenInclude(ri => ri.Ingredient)
                     .Include(s => s.User)
                     .ToListAsync();
-
             }
         }
+
     }
 }

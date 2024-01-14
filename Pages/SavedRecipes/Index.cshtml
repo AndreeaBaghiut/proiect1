@@ -11,9 +11,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SavedRecipe[0].User)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.SavedRecipe[0].Recipe.Title)
             </th>
             <th>
@@ -42,9 +39,6 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.User.UserName)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Recipe.Title)
                 </td>
                 <td>
@@ -68,11 +62,21 @@
                             foreach (var recipeIngredient in item.Recipe.RecipeIngredients)
                             {
                                 <li>
-                                    @recipeIngredient.Quantity @recipeIngredient.Ingredient.Unit - @recipeIngredient.Ingredient.Name
+                                    @if (recipeIngredient.Ingredient != null)
+                                    {
+                                        @recipeIngredient.Quantity
+                                        @recipeIngredient.Ingredient.Unit
+                                        @recipeIngredient.Ingredient.Name
+                                        }
+                                    else
+                                    {
+                                        <span>Ingredient not available</span>
+                                    }
                                 </li>
                             }
                         }
                     </ol>
+
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.SavedDate)

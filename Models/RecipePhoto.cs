@@ -6,10 +6,10 @@ namespace proiect1.Models
     {
         public int Id { get; set; }
 
-        [NotMapped] // Aceasta indica EF să ignore proprietatea în procesul de mapare a bazei de date
+        [NotMapped] // indica ef sa ignore proprietatea in procesul de mapare a bazei de date
         public IFormFile Image { get; set; }
 
-        // Proprietatea pentru numele fișierului
+        // numele fisierului
         public string ImagePath { get; set; }
     }
 }

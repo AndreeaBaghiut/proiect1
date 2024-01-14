@@ -60,13 +60,11 @@ namespace proiect1.Pages.Recipes
                 return NotFound();
             }
 
-            // Remove the associated SavedRecipe if it exists
             if (recipe.SavedRecipe != null)
             {
                 _context.SavedRecipes.Remove(recipe.SavedRecipe);
             }
 
-            // Remove the recipe
             _context.Recipe.Remove(recipe);
 
             await _context.SaveChangesAsync();

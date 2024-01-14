@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,7 +17,7 @@ namespace proiect1.Pages.Recipes
             _context = context;
         }
 
-      public Recipe Recipe { get; set; } = default!; 
+        public Recipe Recipe { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,16 +26,34 @@ namespace proiect1.Pages.Recipes
                 return NotFound();
             }
 
-            var recipe = await _context.Recipe.FirstOrDefaultAsync(m => m.Id == id);
+            var recipe = await _context.Recipe
+                .Include(r => r.RecipeIngredients) 
+                .ThenInclude(ri => ri.Ingredient)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (recipe == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Recipe = recipe;
             }
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostUpdateIngredientAsync(int ingredientId, decimal quantity)
+        {
+            var recipeIngredient = Recipe.RecipeIngredients.FirstOrDefault(ri => ri.IngredientID == ingredientId);
+
+            if (recipeIngredient != null)
+            {
+                recipeIngredient.Quantity = quantity;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("/Recipes/Details", new { id = Recipe.Id });
         }
     }
 }

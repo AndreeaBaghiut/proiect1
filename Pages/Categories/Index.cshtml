@@ -51,15 +51,14 @@
         <thead>
             <tr>
                 <th>Recipe Title</th>
-                <!-- Add other columns as needed -->
             </tr>
+
         </thead>
         <tbody>
             @foreach (var recipe in Model.CategoryData.Recipes)
             {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => recipe.Title)</td>
-                    <!-- Add other columns as needed -->
                 </tr>
             }
         </tbody>

@@ -46,7 +46,7 @@ namespace proiect1.Data
 
             modelBuilder.Entity<SavedRecipe>()
                 .HasIndex(sr => sr.RecipeId)
-                .IsUnique(false); // Set IsUnique to false
+                .IsUnique(false);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.SavedRecipes)

@@ -37,7 +37,7 @@ namespace proiect1.Pages.Recipes
         {
             //Recipe = await _context.Recipe.ToListAsync();
 
-            RecipeD = new RecipeData();  // Adaugă această linie pentru inițializare
+            RecipeD = new RecipeData(); 
 
             TitleSort = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
 

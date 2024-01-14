@@ -1,5 +1,4 @@
-﻿// EditModel.cshtml.cs
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +9,10 @@ using proiect1.Data;
 using proiect1.Models;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+
 
 namespace proiect1.Pages.Recipes
 {
@@ -29,6 +32,7 @@ namespace proiect1.Pages.Recipes
         public Recipe Recipe { get; set; }
         [BindProperty]
         public IFormFile Photo { get; set; }
+        [BindProperty]
         public List<SelectListItem> AllIngredients { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -39,9 +43,9 @@ namespace proiect1.Pages.Recipes
             }
 
             Recipe = await _context.Recipe
-    .Include(b => b.RecipeIngredients).ThenInclude(b => b.Ingredient)
-    .Include(b => b.RecipeCategories).ThenInclude(b => b.Category)
-    .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(b => b.RecipeIngredients).ThenInclude(b => b.Ingredient)
+            .Include(b => b.RecipeCategories).ThenInclude(b => b.Category)
+            .FirstOrDefaultAsync(m => m.Id == id);
 
 
             if (Recipe == null)
@@ -99,7 +103,6 @@ namespace proiect1.Pages.Recipes
                 return NotFound();
             }
 
-            // Update the properties of existing ingredients
             if (await TryUpdateModelAsync<Recipe>(
                  recipeToUpdate,
                  "Recipe",
@@ -108,9 +111,7 @@ namespace proiect1.Pages.Recipes
                  i => i.RecipeIngredients))
 
             {
-                // Update the RecipeIngredients separately
                 UpdateRecipeIngredients(recipeToUpdate);
-                // Update categories
                 UpdateRecipeCategories(_context, selectedCategories, recipeToUpdate);
                 await _context.SaveChangesAsync();
 
@@ -120,8 +121,9 @@ namespace proiect1.Pages.Recipes
 
             PopulateAssignedCategoryData(_context, recipeToUpdate);
             PopulateIngredientsDropdown();
+            await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("./Index");
         }
 
         private void UpdateRecipeIngredients(Recipe recipeToUpdate)
@@ -135,14 +137,12 @@ namespace proiect1.Pages.Recipes
 
                 if (existingIngredients.ContainsKey(ingredientId))
                 {
-                    // Update the properties of the existing ingredient
                     var existingIngredient = existingIngredients[ingredientId];
                     _context.Entry(existingIngredient).CurrentValues.SetValues(ingredient);
                     updatedIngredients.Add(existingIngredient);
                 }
                 else
                 {
-                    // This is a new ingredient, add it to the context
                     _context.RecipeIngredient.Add(ingredient);
                     updatedIngredients.Add(ingredient);
                 }
@@ -150,7 +150,6 @@ namespace proiect1.Pages.Recipes
 
 
 
-            // Remove deleted ingredients
             var deletedIngredients = existingIngredients.Keys.Except(updatedIngredients.Select(ri => ri.Id)).ToList();
             foreach (var ingredientId in deletedIngredients)
             {
@@ -158,7 +157,6 @@ namespace proiect1.Pages.Recipes
                 _context.RecipeIngredient.Remove(ingredientToRemove);
             }
 
-            // Update the recipeToUpdate with the modified list of RecipeIngredients
             recipeToUpdate.RecipeIngredients = updatedIngredients;
         }
 

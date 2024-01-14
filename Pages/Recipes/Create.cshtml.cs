@@ -28,6 +28,7 @@ namespace proiect1.Pages.Recipes
         [BindProperty]
         public Recipe Recipe { get; set; }
         public List<SelectListItem> AllIngredients { get; set; }
+        [BindProperty] 
         public List<RecipeIngredientInputModel> RecipeIngredientsInput { get; set; }
 
         [BindProperty]
@@ -44,7 +45,7 @@ namespace proiect1.Pages.Recipes
             PopulateAssignedCategoryData(_context, recipe);
            // Recipe.PublishingDate = DateTime.Now;
             PopulateIngredientsDropdown();
-            RecipeIngredientsInput = new List<RecipeIngredientInputModel>(); // Add this line
+            RecipeIngredientsInput = new List<RecipeIngredientInputModel>();
 
             return Page();
         }
@@ -88,7 +89,6 @@ namespace proiect1.Pages.Recipes
             {
                 var directoryPath = Path.Combine(_environment.WebRootPath, "Recipe Photos");
 
-                // Verifică dacă directorul există, altfel creează-l
                 if (!Directory.Exists(directoryPath))
                 {
                     Directory.CreateDirectory(directoryPath);

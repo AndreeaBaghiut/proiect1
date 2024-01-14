@@ -6,11 +6,11 @@ namespace proiect1.Models
     {
         public int Id { get; set; }
 
-        // Legătură către utilizatorul care a salvat rețeta
+        // legatura cu utilizatorul care a salvat reteta
         public int? UserId { get; set; }
         public User? User { get; set; }
 
-        // Legătură către rețeta salvată
+        // Legatura cu reteta salvata
         public int? RecipeId { get; set; }
         public Recipe? Recipe { get; set; }
 

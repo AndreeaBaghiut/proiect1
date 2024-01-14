@@ -29,8 +29,6 @@ namespace proiect1.Pages.Ingredients
         [BindProperty]
         public Ingredient Ingredient { get; set; } = default!;
         
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
           if (!ModelState.IsValid || _context.Ingredient == null || Ingredient == null)

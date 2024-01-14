@@ -5,61 +5,6 @@
     ViewData["Title"] = "Create";
 }
 
-
-<script>
-    function addIngredientRow() {
-        var table = document.getElementById('ingredientTable');
-        var row = table.insertRow(-1);
-
-        // Coloana 1 - Selectează ingredient
-        var select = document.createElement('select');
-        select.name = 'RecipeIngredientsInput[' + table.rows.length + '].IngredientID';
-        select.className = 'form-control';
-
-        // Adăugă opțiunile manual, inclusiv unitatea în atributul data-unit
-   @foreach (var ingredient in Model.AllIngredients)
-{
-    <text>
-        var option = document.createElement('option');
-        option.value = "@ingredient.Value";
-        option.text = "@ingredient.Text";
-        option.setAttribute('data-unit', "@ingredient.Group.Name");
-        select.add(option);
-    </text>
-}
-
-
-            row.insertCell(0).appendChild(select);
-
-        // Coloana 2 - Introdu cantitate
-        var quantityInput = document.createElement('input');
-        quantityInput.type = 'text';
-        quantityInput.name = 'RecipeIngredientsInput[' + table.rows.length + '].Quantity';
-        quantityInput.className = 'form-control';
-        row.insertCell(1).appendChild(quantityInput);
-
-        // Coloana 3 - Unitate (afisata initial ca un text)
-        var unitText = document.createElement('span');
-        unitText.className = 'form-control';
-        unitText.innerHTML = ''; // Se completeaza in functie de selectie
-        row.insertCell(2).appendChild(unitText);
-
-        // Adaugă opțiuni pentru afișarea unității în funcție de selecție
-        select.addEventListener('change', function () {
-            unitText.innerHTML = this.options[this.selectedIndex].getAttribute('data-unit');
-        });
-    }
-
-    // Funcția se va apela automat atunci când pagina se încarcă
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () {
-            addIngredientRow();
-        });
-    } else {
-        addIngredientRow();
-    }
-</script>
-
 <form method="post" enctype="multipart/form-data">
 <h1>Create</h1>
 
@@ -147,3 +92,60 @@
 </div>
 </form>
 
+<script>
+
+    var index = 0;
+
+    function addIngredientRow() {
+
+        var table = document.getElementById('ingredientTable');
+
+        var row = table.insertRow(-1);
+
+        // C1 ingredient dropdown
+        var select = document.createElement('select');
+        select.name = 'RecipeIngredientsInput[' + index + '].IngredientID';
+        select.className = 'form-control';
+
+        @foreach (var ingredient in Model.AllIngredients)
+        {
+            <text>
+                var option = document.createElement('option');
+                option.value = "@ingredient.Value";
+                option.text = "@ingredient.Text";
+                option.setAttribute('data-unit', "@ingredient.Group.Name");
+                select.add(option);
+            </text>
+        }
+
+        row.insertCell(0).appendChild(select);
+
+        // C2 quantity
+        var quantityInput = document.createElement('input');
+        quantityInput.type = 'text';
+        quantityInput.name = 'RecipeIngredientsInput[' + index + '].Quantity';
+        quantityInput.className = 'form-control';
+
+        row.insertCell(1).appendChild(quantityInput);
+
+        // C3 unit
+        var unitText = document.createElement('span');
+        unitText.className = 'form-control';
+        unitText.innerHTML = '';
+
+        row.insertCell(2).appendChild(unitText);
+
+        select.addEventListener('change', function () {
+            unitText.innerHTML = this.options[this.selectedIndex].getAttribute('data-unit');
+        });
+
+        index++;
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            addIngredientRow();
+        });
+    } else {
+        addIngredientRow();
+    }
+</script>
